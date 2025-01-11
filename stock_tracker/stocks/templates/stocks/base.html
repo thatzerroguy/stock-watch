@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'dashboard' %}" class="text-white font-bold text-xl">StockTracker</a>
+            {% if user.is_authenticated %}
+                <div class="space-x-4">
+                    <a href="{% url 'watchlist' %}" class="text-white">Watchlist</a>
+                    <a href="{% url 'logout' %}" class="text-white">Logout</a>
+                </div>
+            {% else %}
+                <div class="space-x-4">
+                    <a href="{% url 'login' %}" class="text-white">Login</a>
+                    <a href="{% url 'register' %}" class="text-white">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-8 px-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

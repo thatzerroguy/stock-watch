@@ -1,0 +1,19 @@
+{% extends 'stocks/base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-6">Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="space-y-4">
+            {{ form.as_p }}
+            <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Login
+            </button>
+        </div>
+    </form>
+    <p class="mt-4 text-center">
+        Don't have an account? <a href="{% url 'register' %}" class="text-blue-600 hover:text-blue-800">Register here</a>
+    </p>
+</div>
+{% endblock %}

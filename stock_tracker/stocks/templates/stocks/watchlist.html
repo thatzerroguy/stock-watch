@@ -1,0 +1,42 @@
+{% extends 'stocks/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <form method="post" class="bg-white p-6 rounded-lg shadow mb-6">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 gap-4">
+            {{ form.as_p }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Add Stock
+            </button>
+        </div>
+    </form>
+
+    <div class="bg-white rounded-lg shadow">
+        <table class="min-w-full">
+            <thead>
+                <tr class="bg-gray-50">
+                    <th class="px-6 py-3 text-left">Symbol</th>
+                    <th class="px-6 py-3 text-left">Company</th>
+                    <th class="px-6 py-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stock in stocks %}
+                <tr class="border-t">
+                    <td class="px-6 py-4">{{ stock.symbol }}</td>
+                    <td class="px-6 py-4">{{ stock.company_name }}</td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{% url 'delete_stock' stock.id %}"
+                           class="text-red-600 hover:text-red-800"
+                           onclick="return confirm('Are you sure?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
