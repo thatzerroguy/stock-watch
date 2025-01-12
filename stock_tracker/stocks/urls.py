@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views  # This imports views from the stocks app
+from . import views, api_views  # This imports views from the stocks app
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
@@ -8,5 +8,6 @@ urlpatterns = [
     path('watchlist/', views.watchlist, name='watchlist'),
     path('delete_stock/<int:stock_id>/', views.delete_stock, name='delete_stock'),
     path('login/', auth_views.LoginView.as_view(template_name='stocks/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('api/search_stocks/', api_views.search_stocks, name='search_stocks'),
 ]

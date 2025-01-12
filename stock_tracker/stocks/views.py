@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegistrationForm, StockForm
@@ -34,18 +34,31 @@ def dashboard(request):
 @login_required
 def watchlist(request):
     if request.method == 'POST':
-        form = StockForm(request.POST)
-        if form.is_valid():
-            stock = form.save(commit=False)
-            stock.user = request.user
-            stock.save()
-            messages.success(request, 'Stock added to watchlist!')
-            return redirect('watchlist')
-    else:
-        form = StockForm()
+        symbol = request.POST.get('symbol', '').upper()
+        if symbol:
+            # Fetch stock data first to validate and get company name
+            stock_data = fetch_stock_data(symbol)
+            if stock_data:
+                stock, created = Stock.objects.get_or_create(
+                    user=request.user,
+                    symbol=symbol,
+                    defaults={
+                        'company_name': stock_data['company_name'],
+                        'last_price': stock_data['price']
+                    }
+                )
+                if created:
+                    messages.success(request, f'Added {symbol} to your watchlist!')
+                else:
+                    messages.info(request, f'{symbol} is already in your watchlist!')
+            else:
+                messages.error(request, f'Could not find stock with symbol {symbol}')
+        return redirect('watchlist')
 
     stocks = Stock.objects.filter(user=request.user)
-    return render(request, 'stocks/watchlist.html', {'form': form, 'stocks': stocks})
+    return render(request, 'stocks/watchlist.html', {
+        'stocks': stocks,
+    })
 
 
 @login_required
